@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PS5 Controller Chat</title>
+    <title>Virtual Keyboard</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -65,6 +65,9 @@
             cursor: pointer;
             text-align: center;
         }
+        .shift.pressed {
+            background: #696974
+        }
         .key:hover { background: #52525b; }
         .key.wide { grid-column: span 2; background: #dc2626; } /* Backspace */
         .key.space { grid-column: span 6; background: #52525b; }
@@ -87,6 +90,7 @@
             font-size: 13px;
         }
     </style>
+    <script defer src="https://unpkg.com"></script>
 </head>
 <body>
 
@@ -129,6 +133,7 @@
         <button class="key" onclick="press('J')">J</button>
         <button class="key" onclick="press('K')">K</button>
         <button class="key" onclick="press('L')">L</button>
+        <button class="key shift" onclick="press('SHIFT')">SHIFT</button>
         <button class="key wide" onclick="press('BACK')">BKSP</button>
 
         <!-- Row 3 -->
@@ -141,7 +146,7 @@
         <button class="key" onclick="press('M')">M</button>
         <button class="key" onclick="press(',')">,</button>
         <button class="key" onclick="press('.')">.</button>
-        <button class="key" onclick="press('?')">?</button>
+        <button class="key question-exclam" value="?" onclick="press(this)">?</button>
 
         <!-- Function Row -->
         <button class="key space" onclick="press('SPACE')">Spacebar</button>
@@ -150,15 +155,27 @@
 
     <script>
         let currentText = "";
+        let isCapitalized = false;
         const preview = document.getElementById('preview-field');
 
         function press(key) {
             if (key === 'BACK') {
                 currentText = currentText.slice(0, -1);
+            } else if (key === 'SHIFT') {
+                isCapitalized = !isCapitalized;
+
+                document.querySelector('.shift').classList.toggle('pressed');
+                const questionExclam = document.querySelector('.question-exclam');
+                questionExclam.innerHTML = isCapitalized ? '!' : '?';
+                questionExclam.value = isCapitalized ? '!' : '?';
             } else if (key === 'SPACE') {
                 currentText += " ";
             } else {
-                currentText += key;
+                if (typeof key === 'string') {
+                    currentText += isCapitalized ? key.toUpperCase() : key.toLowerCase();
+                } else {
+                    currentText += isCapitalized ? key.value.toUpperCase() : key.value.toLowerCase();
+                }
             }
             preview.innerText = currentText;
         }
