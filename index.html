@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS5 Controller Chat</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f0f12;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        #chat-box {
+            flex: 1;
+            border: 1px solid #27272a;
+            background: #18181b;
+            padding: 15px;
+            overflow-y: auto;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .message {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        .me { background: #2563eb; align-self: flex-end; margin-left: auto; }
+        .peer { background: #3f3f46; align-self: flex-start; }
+
+        /* Output display field for the custom keyboard */
+        .typing-preview {
+            background: #27272a;
+            border: 1px solid #3f3f46;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            min-height: 20px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        /* Virtual Keypad styling optimized for controller clicking */
+        .keyboard-matrix {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .key {
+            background: #3f3f46;
+            color: white;
+            border: none;
+            padding: 14px 0;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .key:hover { background: #52525b; }
+        .key.wide { grid-column: span 2; background: #dc2626; } /* Backspace */
+        .key.space { grid-column: span 6; background: #52525b; }
+        .key.send-btn { grid-column: span 2; background: #10b981; color: #000; }
+
+        .macro-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+        }
+        .macro {
+            background: #27272a;
+            border: 1px solid #3f3f46;
+            color: #d1d5db;
+            padding: 8px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chat-box">
+        <div class="message peer">System: Welcome! Click the layout below to type, so that Heghine can see you.</div>
+    </div>
+
+    <!-- Quick Macros for speed -->
+    <div class="macro-row">
+        <button class="macro" onclick="useMacro('Yes! 👍')">Yes! 👍</button>
+        <button class="macro" onclick="useMacro('No 👎')">No 👎</button>
+        <button class="macro" onclick="useMacro('Wait a sec 🎮')">Wait a sec 🎮</button>
+        <button class="macro" onclick="useMacro('Almost done')">Almost done</button>
+    </div>
+
+    <!-- Text area reflecting what they are clicking -->
+    <div class="typing-preview" id="preview-field"></div>
+
+    <!-- Virtual Keyboard Matrix -->
+    <div class="keyboard-matrix">
+        <!-- Row 1 -->
+        <button class="key" onclick="press('Q')">Q</button>
+        <button class="key" onclick="press('W')">W</button>
+        <button class="key" onclick="press('E')">E</button>
+        <button class="key" onclick="press('R')">R</button>
+        <button class="key" onclick="press('T')">T</button>
+        <button class="key" onclick="press('Y')">Y</button>
+        <button class="key" onclick="press('U')">U</button>
+        <button class="key" onclick="press('I')">I</button>
+        <button class="key" onclick="press('O')">O</button>
+        <button class="key" onclick="press('P')">P</button>
+        
+        <!-- Row 2 -->
+        <button class="key" onclick="press('A')">A</button>
+        <button class="key" onclick="press('S')">S</button>
+        <button class="key" onclick="press('D')">D</button>
+        <button class="key" onclick="press('F')">F</button>
+        <button class="key" onclick="press('G')">G</button>
+        <button class="key" onclick="press('H')">H</button>
+        <button class="key" onclick="press('J')">J</button>
+        <button class="key" onclick="press('K')">K</button>
+        <button class="key" onclick="press('L')">L</button>
+        <button class="key wide" onclick="press('BACK')">BKSP</button>
+
+        <!-- Row 3 -->
+        <button class="key" onclick="press('Z')">Z</button>
+        <button class="key" onclick="press('X')">X</button>
+        <button class="key" onclick="press('C')">C</button>
+        <button class="key" onclick="press('V')">V</button>
+        <button class="key" onclick="press('B')">B</button>
+        <button class="key" onclick="press('N')">N</button>
+        <button class="key" onclick="press('M')">M</button>
+        <button class="key" onclick="press(',')">,</button>
+        <button class="key" onclick="press('.')">.</button>
+        <button class="key" onclick="press('?')">?</button>
+
+        <!-- Function Row -->
+        <button class="key space" onclick="press('SPACE')">Spacebar</button>
+        <button class="key send-btn" onclick="dispatchMessage()">SEND</button>
+    </div>
+
+    <script>
+        let currentText = "";
+        const preview = document.getElementById('preview-field');
+
+        function press(key) {
+            if (key === 'BACK') {
+                currentText = currentText.slice(0, -1);
+            } else if (key === 'SPACE') {
+                currentText += " ";
+            } else {
+                currentText += key;
+            }
+            preview.innerText = currentText;
+        }
+
+        function useMacro(text) {
+            currentText = text;
+            preview.innerText = currentText;
+            dispatchMessage();
+        }
+
+        function dispatchMessage() {
+            if (currentText.trim() === "") return;
+            
+            // Append locally for testing visual behavior
+            appendMessage(currentText, 'me');
+            
+            // The backend should be here
+            
+            // Clear input buffer
+            currentText = "";
+            preview.innerText = "";
+        }
+
+        function appendMessage(text, sender) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+            div.innerText = text;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+    </script>
+</body>
+</html>
