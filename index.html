@@ -160,31 +160,31 @@
         const urlParams = new URLSearchParams(window.location.search);
         const roomId = urlParams.get('room');
 
-        // const iceConfig = {
-        //     config: {
-        //         iceServers: [
-        //             { urls: 'stun:://google.com' },
-        //             { urls: 'stun:://google.com' },
-        //             // Public Open Relay TURN servers to bypass strict home router firewalls.
-        //             {
-        //                 urls: 'turn:openrelay.metered.ca:80',
-        //                 username: 'openrelay',
-        //                 credential: 'openrelay'
-        //             },
-        //             {
-        //                 urls: 'turn:openrelay.metered.ca:443',
-        //                 username: 'openrelay',
-        //                 credential: 'openrelay'
-        //             }
-        //         ]
-        //     },
-        //     debug: 1 // Reduces console clutter but shows critical errors.
-        // };
+        const iceConfig = {
+            config: {
+                iceServers: [
+                    { urls: 'stun:://google.com' },
+                    { urls: 'stun:://google.com' },
+                    // Public Open Relay TURN servers to bypass strict home router firewalls.
+                    {
+                        urls: 'turn:openrelay.metered.ca:80',
+                        username: 'openrelay',
+                        credential: 'openrelay'
+                    },
+                    {
+                        urls: 'turn:openrelay.metered.ca:443',
+                        username: 'openrelay',
+                        credential: 'openrelay'
+                    }
+                ]
+            },
+            debug: 1 // Reduces console clutter but shows critical errors.
+        };
 
         if (roomId) {
             // Interlocutor's flow.
-            // peer = new Peer();
-            peer = new Peer({ debug: 3 });
+            peer = new Peer(iceConfig);
+            // peer = new Peer({ debug: 3 });
             peer.on('open', (id) => {
                 appendMessage("Establishing secure direct bridge to Heghine...", 'peer');
                 conn = peer.connect(roomId);
