@@ -163,9 +163,10 @@
         const iceConfig = {
             config: {
                 iceServers: [
-                    { urls: 'stun:://google.com' },
-                    { urls: 'stun:://google.com' },
-                    // Public Open Relay TURN servers to bypass strict home router firewalls.
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' },
+                    // Free public TURN servers to bridge strict NAT/Home Router firewalls
                     {
                         urls: 'turn:openrelay.metered.ca:80',
                         username: 'openrelay',
@@ -178,7 +179,7 @@
                     }
                 ]
             },
-            debug: 1 // Reduces console clutter but shows critical errors.
+            debug: 1
         };
 
         if (roomId) {
