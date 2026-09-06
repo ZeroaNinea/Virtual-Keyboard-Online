@@ -35,7 +35,6 @@
         .me { background: #2563eb; align-self: flex-end; margin-left: auto; }
         .peer { background: #3f3f46; align-self: flex-start; }
 
-        /* Output display field for the custom keyboard */
         .typing-preview {
             background: #27272a;
             border: 1px solid #3f3f46;
@@ -47,10 +46,9 @@
             color: #ffffff;
         }
 
-        /* Virtual Keypad styling optimized for controller clicking */
         .keyboard-matrix {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(11, 1fr); /* Switched to 11 to fit SHIFT and BKSP beautifully */
             gap: 6px;
             margin-bottom: 10px;
         }
@@ -66,12 +64,12 @@
             text-align: center;
         }
         .shift.pressed {
-            background: #696974
+            background: #2563eb; /* Blue accent color when active */
         }
         .key:hover { background: #52525b; }
-        .key.wide { grid-column: span 2; background: #dc2626; } /* Backspace */
-        .key.space { grid-column: span 6; background: #52525b; }
-        .key.send-btn { grid-column: span 2; background: #10b981; color: #000; }
+        .key.wide { grid-column: span 2; background: #dc2626; }
+        .key.space { grid-column: span 7; background: #52525b; }
+        .key.send-btn { grid-column: span 4; background: #10b981; color: #000; }
 
         .macro-row {
             display: flex;
@@ -90,15 +88,15 @@
             font-size: 13px;
         }
     </style>
-    <script defer src="https://unpkg.com"></script>
+    <!-- <script src="https://unpkg.com"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 </head>
 <body>
 
     <div id="chat-box">
-        <div class="message peer">System: Welcome! Click the layout below to type, so that Heghine can see you.</div>
+        <div class="message peer">System: Initializing Peer Connection...</div>
     </div>
 
-    <!-- Quick Macros for speed -->
     <div class="macro-row">
         <button class="macro" onclick="useMacro('Yes! 👍')">Yes! 👍</button>
         <button class="macro" onclick="useMacro('No 👎')">No 👎</button>
@@ -106,49 +104,45 @@
         <button class="macro" onclick="useMacro('Almost done')">Almost done</button>
     </div>
 
-    <!-- Text area reflecting what they are clicking -->
     <div class="typing-preview" id="preview-field"></div>
 
-    <!-- Virtual Keyboard Matrix -->
     <div class="keyboard-matrix">
         <!-- Row 1 -->
-        <button class="key" onclick="press('Q')">Q</button>
-        <button class="key" onclick="press('W')">W</button>
-        <button class="key" onclick="press('E')">E</button>
-        <button class="key" onclick="press('R')">R</button>
-        <button class="key" onclick="press('T')">T</button>
-        <button class="key" onclick="press('Y')">Y</button>
-        <button class="key" onclick="press('U')">U</button>
-        <button class="key" onclick="press('I')">I</button>
-        <button class="key" onclick="press('O')">O</button>
-        <button class="key" onclick="press('P')">P</button>
+        <button class="key letter" onclick="press('Q')">q</button>
+        <button class="key letter" onclick="press('W')">w</button>
+        <button class="key letter" onclick="press('E')">e</button>
+        <button class="key letter" onclick="press('R')">r</button>
+        <button class="key letter" onclick="press('T')">t</button>
+        <button class="key letter" onclick="press('Y')">y</button>
+        <button class="key letter" onclick="press('U')">u</button>
+        <button class="key letter" onclick="press('I')">i</button>
+        <button class="key letter" onclick="press('O')">o</button>
+        <button class="key letter" onclick="press('P')">p</button>
+        <button class="key wide" onclick="press('BACK')">BKSP</button>
         
         <!-- Row 2 -->
-        <button class="key" onclick="press('A')">A</button>
-        <button class="key" onclick="press('S')">S</button>
-        <button class="key" onclick="press('D')">D</button>
-        <button class="key" onclick="press('F')">F</button>
-        <button class="key" onclick="press('G')">G</button>
-        <button class="key" onclick="press('H')">H</button>
-        <button class="key" onclick="press('J')">J</button>
-        <button class="key" onclick="press('K')">K</button>
-        <button class="key" onclick="press('L')">L</button>
+        <button class="key letter" onclick="press('A')">a</button>
+        <button class="key letter" onclick="press('S')">s</button>
+        <button class="key letter" onclick="press('D')">d</button>
+        <button class="key letter" onclick="press('F')">f</button>
+        <button class="key letter" onclick="press('G')">g</button>
+        <button class="key letter" onclick="press('H')">h</button>
+        <button class="key letter" onclick="press('J')">j</button>
+        <button class="key letter" onclick="press('K')">k</button>
+        <button class="key letter" onclick="press('L')">l</button>
         <button class="key shift" onclick="press('SHIFT')">SHIFT</button>
-        <button class="key wide" onclick="press('BACK')">BKSP</button>
-
-        <!-- Row 3 -->
-        <button class="key" onclick="press('Z')">Z</button>
-        <button class="key" onclick="press('X')">X</button>
-        <button class="key" onclick="press('C')">C</button>
-        <button class="key" onclick="press('V')">V</button>
-        <button class="key" onclick="press('B')">B</button>
-        <button class="key" onclick="press('N')">N</button>
-        <button class="key" onclick="press('M')">M</button>
-        <button class="key" onclick="press(',')">,</button>
-        <button class="key" onclick="press('.')">.</button>
         <button class="key question-exclam" value="?" onclick="press(this)">?</button>
 
-        <!-- Function Row -->
+        <!-- Row 3 -->
+        <button class="key letter" onclick="press('Z')">z</button>
+        <button class="key letter" onclick="press('X')">x</button>
+        <button class="key letter" onclick="press('C')">c</button>
+        <button class="key letter" onclick="press('V')">v</button>
+        <button class="key letter" onclick="press('B')">b</button>
+        <button class="key letter" onclick="press('N')">n</button>
+        <button class="key letter" onclick="press('M')">m</button>
+        <button class="key" onclick="press(',')">,</button>
+        <button class="key" onclick="press('.')">.</button>
         <button class="key space" onclick="press('SPACE')">Spacebar</button>
         <button class="key send-btn" onclick="dispatchMessage()">SEND</button>
     </div>
@@ -157,6 +151,50 @@
         let currentText = "";
         let isCapitalized = false;
         const preview = document.getElementById('preview-field');
+        
+        let peer;
+        let conn;
+
+        // --- WebRTC Routing Setup ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('room');
+
+        if (roomId) {
+            // Interlocutor's flow.
+            // peer = new Peer();
+            peer = new Peer({ debug: 3 });
+            peer.on('open', (id) => {
+                appendMessage("Establishing secure direct bridge to Heghine...", 'peer');
+                conn = peer.connect(roomId);
+                setupConnection();
+            });
+        } else {
+            // Heghine's flow.
+            const randomId = Math.random().toString(36).substring(2, 6).toUpperCase();
+            peer = new Peer(randomId);
+            
+            peer.on('open', (id) => {
+                appendMessage(`Ready! Copy this URL and drop it into Discord for them:\n\n${window.location.href}?room=${id}`, 'peer');
+            });
+
+            peer.on('connection', (connection) => {
+                conn = connection;
+                appendMessage("Connection established.", 'peer');
+                setupConnection();
+            });
+        }
+
+        function setupConnection() {
+            conn.on('data', (data) => {
+                appendMessage(data, 'peer');
+            });
+            conn.on('close', () => {
+                appendMessage("Direct bridge closed.", 'peer');
+            });
+            conn.on('error', (err) => {
+                appendMessage("Connection error occurred.", 'peer');
+            });
+        }
 
         function press(key) {
             if (key === 'BACK') {
@@ -168,13 +206,18 @@
                 const questionExclam = document.querySelector('.question-exclam');
                 questionExclam.innerHTML = isCapitalized ? '!' : '?';
                 questionExclam.value = isCapitalized ? '!' : '?';
+                
+                // Dynamically transform visible layout buttons on screen.
+                document.querySelectorAll('.key.letter').forEach(btn => {
+                    btn.innerHTML = isCapitalized ? btn.innerHTML.toUpperCase() : btn.innerHTML.toLowerCase();
+                });
             } else if (key === 'SPACE') {
                 currentText += " ";
             } else {
                 if (typeof key === 'string') {
                     currentText += isCapitalized ? key.toUpperCase() : key.toLowerCase();
                 } else {
-                    currentText += isCapitalized ? key.value.toUpperCase() : key.value.toLowerCase();
+                    currentText += key.value; // Keeps literal "!" or "?" value assigned to element.
                 }
             }
             preview.innerText = currentText;
@@ -189,12 +232,17 @@
         function dispatchMessage() {
             if (currentText.trim() === "") return;
             
-            // Append locally for testing visual behavior
             appendMessage(currentText, 'me');
+
+            console.log(conn);
             
-            // The backend should be here
+            // WIRED BACKEND: Fires layout payload safely across direct WebRTC channel.
+            if (conn && conn.open) {
+                conn.send(currentText);
+            } else {
+                appendMessage("System Error: No connected partner found to send data to.", 'peer');
+            }
             
-            // Clear input buffer
             currentText = "";
             preview.innerText = "";
         }
