@@ -183,8 +183,8 @@
 
         if (roomId) {
             // Interlocutor's flow.
-            peer = new Peer();
-            // peer = new Peer({ debug: 3 });
+            // peer = new Peer();
+            peer = new Peer({ debug: 5 });
             peer.on('open', (id) => {
                 appendMessage("Establishing secure direct bridge to Heghine...", 'peer');
                 conn = peer.connect(roomId);
